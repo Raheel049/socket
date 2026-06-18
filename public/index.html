@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Hello socket</h1>
+
+   <form action="">
+    <input type="text" id="input">
+    <button id="sendBtn">SendMsg</button>
+    <button id="connBtn">Disconnected</button>
+   </form>
+
+   <ul id="messages"></ul>
+</body>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    const socket = io()
+
+    const input =  document.querySelector('#input')
+    const btn = document.querySelector('#sendBtn')
+    const connBtn = document.querySelector("#connBtn");
+    
+
+    btn.onclick = (e) => {
+        e.preventDefault()
+        socket.emit('message', input.value.trim())
+        input.value = ''
+    }
+
+    connBtn.onclick = (e) => {
+        e.preventDefault()
+        if(socket.connected){
+            connBtn.innerText = 'Connect'
+            socket.disconnect()
+        }else{
+            connBtn.innerText = 'Disconnect'
+            socket.connect()
+        }
+    }
+
+    socket.on('message', (msg) => {
+        const li = document.createElement('li')
+        li.innerText = msg
+
+    document.querySelector("#messages").appendChild(li)
+    
+    })
+</script>
+</html>
